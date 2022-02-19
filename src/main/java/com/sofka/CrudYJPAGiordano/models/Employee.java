@@ -1,9 +1,8 @@
 package com.sofka.CrudYJPAGiordano.models;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.*;
 
 @Entity
 public class Employee {
@@ -20,14 +19,25 @@ public class Employee {
     @Column(length = 10, nullable = false, unique = true)
     private String employeeid;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name="id_role")
+    private Role role;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "employee_project", 
+             joinColumns = { @JoinColumn(name = "employee_id") }, 
+             inverseJoinColumns = { @JoinColumn(name = "project_id") })
+    private List<Project> projects = new ArrayList<Project>();
+
     public Employee() {
     }
 
 
-    public Employee(String firstName, String lastName, String employeeid) {
+    public Employee(String firstName, String lastName, String employeeid,Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.employeeid = employeeid;
+        this.setRole(role);
     }
 
     public Long getId() {
@@ -49,9 +59,23 @@ public class Employee {
     public String getLastName() {
         return lastName;
     }
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 
     public String getEmployeeid() {
